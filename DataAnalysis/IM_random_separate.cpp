@@ -145,35 +145,35 @@ Type objective_function<Type>::operator() ()
     }
   }
   // Intensity function @ points
-  int j=0;
-  for(int i=0; i<nobs_sp1; i++, j++){
-    jnll_comp(6) -= alpha0 + alpha1 * Bias(j) + beta(tp_i(j)) + beta1 * Cov(j) + omg_sp1(i) - log(exp(alpha0 + alpha1 * Bias(j)) + 1);
+  int h=0;
+  for(int i=0; i<nobs_sp1; i++, h++){
+    jnll_comp(6) -= alpha0 + alpha1 * Bias(h) + beta(tp_i(h)) + beta1 * Cov(h) + omg_sp1(i) - log(exp(alpha0 + alpha1 * Bias(h)) + 1);
   }
 
-  for(int i=0; i<nobs_sp2; i++, j++){
-    jnll_comp(7) -= alpha0 + alpha1 * Bias(j) + beta(tp_i(j)) + beta1 * Cov(j) + omg_sp2(i) - log(exp(alpha0 + alpha1 * Bias(j)) + 1);
+  for(int i=0; i<nobs_sp2; i++, h++){
+    jnll_comp(7) -= alpha0 + alpha1 * Bias(h) + beta(tp_i(h)) + beta1 * Cov(h) + omg_sp2(i) - log(exp(alpha0 + alpha1 * Bias(h)) + 1);
   }
 
-  for(int i=0; i<nobs_su; i++, j++){
-    jnll_comp(8) -= alpha0 + alpha1 * Bias(j) + beta(tp_i(j)) + beta1 * Cov(j) + omg_su(i) - log(exp(alpha0 + alpha1 * Bias(j)) + 1);
+  for(int i=0; i<nobs_su; i++, h++){
+    jnll_comp(8) -= alpha0 + alpha1 * Bias(h) + beta(tp_i(h)) + beta1 * Cov(h) + omg_su(i) - log(exp(alpha0 + alpha1 * Bias(h)) + 1);
   }
 
   // Intensity function @ counts
   vector<Type> lambda(ncount);
-  int g=0;
-  for(int i=0; i<ncount_sp1; i++, j++, g++){
-    lambda(g) = area(g) * exp(beta(tp_i(j)) + beta1 * Cov(j) + omg_sp1(i+nobs_sp1));
-    jnll_comp(9) -= dpois(counts(g), lambda(g), true);
+  int f=0;
+  for(int i=0; i<ncount_sp1; i++, h++, f++){
+    lambda(f) = area(f) * exp(beta(tp_i(h)) + beta1 * Cov(h) + omg_sp1(i+nobs_sp1));
+    jnll_comp(9) -= dpois(counts(f), lambda(f), true);
   }
 
-  for(int i=0; i<ncount_sp2; i++, j++, g++){
-    lambda(g) = area(g) * exp(beta(tp_i(j)) + beta1 * Cov(j) + omg_sp2(i+nobs_sp2));
-    jnll_comp(10) -= dpois(counts(g), lambda(g), true);
+  for(int i=0; i<ncount_sp2; i++, h++, f++){
+    lambda(f) = area(f) * exp(beta(tp_i(h)) + beta1 * Cov(h) + omg_sp2(i+nobs_sp2));
+    jnll_comp(10) -= dpois(counts(f), lambda(f), true);
   }
 
-  for(int i=0; i<ncount_su; i++, j++, g++){
-    lambda(g) = area(g) * exp(beta(tp_i(j)) + beta1 * Cov(j) + omg_su(i+nobs_su));
-    jnll_comp(11) -= dpois(counts(g), lambda(g), true);
+  for(int i=0; i<ncount_su; i++, h++, f++){
+    lambda(f) = area(f) * exp(beta(tp_i(h)) + beta1 * Cov(h) + omg_su(i+nobs_su));
+    jnll_comp(11) -= dpois(counts(f), lambda(f), true);
   }
 
   // Joint NLL

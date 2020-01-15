@@ -2,6 +2,11 @@
 #----Covariate extraction----#
 #----------------------------#
 
+#TODO: 
+#fix raster stack saving issue
+#change data loading code
+
+
 #-Libraries-#
 library(tidyverse)
 library(sf)

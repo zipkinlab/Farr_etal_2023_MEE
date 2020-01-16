@@ -33,7 +33,6 @@ Type objective_function<Type>::operator() ()
 
   // Fixed effects
   PARAMETER( beta0 );   // Intensity function intercept by year
-  PARAMETER( beta1 );          // Effect of NDVI on intensity
   PARAMETER( delta1 );
   PARAMETER( delta2 );
   PARAMETER( gamma1 );
@@ -85,9 +84,9 @@ Type objective_function<Type>::operator() ()
   vector<Type> Omega_su(nodes_su);
   //matrix<Type> Omega(nodes, ??); // This should be 2
   //matrix<Type> Epsilon(nodes, t_n);
-  vector<Type> omg_sp1(nobs_sp1 + ncount_sp1);
-  vector<Type> omg_sp2(nobs_sp2 + ncount_sp2);
-  vector<Type> omg_su(nobs_su + ncount_su);
+  vector<Type> omg_sp1(nobs_sp1);
+  vector<Type> omg_sp2(nobs_sp2);
+  vector<Type> omg_su(nobs_su);
 
   // Transform GMRFs
 

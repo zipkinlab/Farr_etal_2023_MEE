@@ -45,6 +45,8 @@ if(length(nonconverged) != 0){
   est <- est[,,-nonconverged]
 }
 
+est <- est[,,1:1000]
+
 #------------------------#
 #-Root mean square error-#
 #------------------------#
@@ -94,7 +96,7 @@ rb.data <- rb.data %>% rename(type = variable) %>%
          type = recode(type, "IM.Estimate" = "Integrated", "PO.Estimate" = "Presence-only"))
 rb.data <- rb.data %>% pivot_wider(names_from = quantile, values_from = value)
 
-cbind(rb.data[,1:2], rb.data[,3:7] * 100)
+cbind(rb.data[,1:2], round(rb.data[,3:7] * 100, digits = 2))
 
 #----------#
 #-Figure 1-#
@@ -102,11 +104,11 @@ cbind(rb.data[,1:2], rb.data[,3:7] * 100)
 
 Fig1A <- ggplotGrob(ggplot() +
   gg(intensity1) +
-  scale_fill_gradientn(limit = c(0,1), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
+  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) +
-  geom_sf(data = pop1, fill = NA, col = "Black", size = 0.75, linetype = 0) +
-  geom_sf(data = st_buffer(domain1, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
+  geom_sf(data = pop1, fill = NA, col = "Black", size = 0.25, linetype = 0) +
+  # geom_sf(data = st_buffer(domain, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
   theme_few() +
   theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
         legend.position = "none",
@@ -117,11 +119,11 @@ Fig1A <- ggplotGrob(ggplot() +
 
 Fig1B <- ggplotGrob(ggplot() +
   gg(intensity2) +
-  scale_fill_gradientn(limit = c(0,1), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
+  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) +
-  geom_sf(data = pop2, fill = NA, col = "Black", size = 0.75, linetype = 0) +
-  geom_sf(data = st_buffer(domain2, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
+  geom_sf(data = pop2, fill = NA, col = "Black", size = 0.25, linetype = 0) +
+  # geom_sf(data = st_buffer(domain2, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
   theme_few() +
   theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
         legend.position = "none",
@@ -132,12 +134,12 @@ Fig1B <- ggplotGrob(ggplot() +
 
 Fig1C <- ggplotGrob(ggplot() +
   gg(intensity1) +
-  scale_fill_gradientn(limit = c(0,1), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
+  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) +
   geom_sf(data = po1, fill = NA, col = "White", size = 0.75, linetype = 0) +
-  geom_sf(data = st_buffer(domain1, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
-  geom_sf(data = sites, fill = NA, col = "Black", size = 0.75, linetype = 2) +
+  # geom_sf(data = st_buffer(domain1, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
+  geom_sf(data = sites, fill = NA, col = "Black", size = 0.25, linetype = 2) +
   geom_text(data = countdf, aes(Var1, Var2, label = count), color = "Black") +
   theme_few() +
   theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
@@ -145,15 +147,16 @@ Fig1C <- ggplotGrob(ggplot() +
         axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
+        text = element_text(size = 14),
         panel.spacing = unit(0, "in")))
 
 Fig1D <- ggplotGrob(ggplot() +
   gg(intensity2) +
-  scale_fill_gradientn(limit = c(0,1), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
+  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) +
   geom_sf(data = po2, fill = NA, col = "White", size = 0.75, linetype = 0) +
-  geom_sf(data = st_buffer(domain2, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
+  # geom_sf(data = st_buffer(domain2, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
   theme_few() +
   theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
         legend.position = "none",
@@ -164,7 +167,7 @@ Fig1D <- ggplotGrob(ggplot() +
 
 Legend <- ggplotGrob(ggplot() +
           gg(intensity2) +
-          scale_fill_gradientn(limit = c(0,1), colors = brewer.pal(n = 9, name =  "YlGnBu"), name = "Expected population density",
+          scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu"), name = "Expected population density",
                                guide = guide_colorbar(ticks.colour = "Black",
                                                       frame.colour = "Black",
                                                       barwidth = 20,
@@ -183,7 +186,7 @@ Legend <- ggplotGrob(ggplot() +
                 panel.spacing = unit(0, "in")))$grob[[15]]
 
 
-Fig1E <- ggplotGrob(data %>% filter(params %in% c("beta0", "beta1", "delta1")) %>%
+Fig1E <- ggplotGrob(rb.data %>% filter(params %in% c("beta0", "beta1", "delta1")) %>%
   ggplot(., aes(x = type)) +
   geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type), 
                stat = "identity", size = 0.75) +
@@ -210,7 +213,7 @@ for(i in 1:3){
 }
 
 
-Fig1F <- ggplotGrob(data %>% filter(params %in% c("N1", "N2")) %>%
+Fig1F <- ggplotGrob(rb.data %>% filter(params %in% c("N1", "N2")) %>%
   ggplot(., aes(x = params)) +
   geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type), 
                stat = "identity", size = 0.75) +

@@ -296,6 +296,28 @@ ggplot(data = ex %>% filter(!grepl("Error", Var2)), aes(x=Var1, y = value, col =
 
 #domain_sp; domain_su; mesh[[]];
 
+domain_sp <- st_read("~/Monarchs/DataFormatting/BaseData/Domain/Domain_Spring.shp")
+domain_su <- st_read("~/Monarchs/DataFormatting/BaseData/Domain/Domain_Summer.shp")
+
+prj <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=km +no_defs"
+
+domain_sp <- st_transform(domain_sp, crs = st_crs(prj))
+domain_su <- st_transform(domain_su, crs = st_crs(prj))
+
+domain_sp_seg <- inla.sp2segment(as(domain_sp, "Spatial"))
+domain_su_seg <- inla.sp2segment(as(domain_su, "Spatial"))
+
+mesh <- list()
+
+mesh[[1]] <- mesh[[2]] <- inla.mesh.2d(boundary=domain_sp_seg,
+                                       max.edge=75,
+                                       cutoff=30)
+
+mesh[[3]] <- inla.mesh.2d(boundary=domain_su_seg,
+                          max.edge=75,
+                          cutoff=30)
+
+
 sp.intensity <- raster::raster(domain_sp, resolution = c(10, 10))
 sp.Grid <- coordinates(sp.intensity)
 sp.GridA <- inla.spde.make.A(mesh[[1]], loc = sp.Grid)
@@ -1122,7 +1144,7 @@ Fig3B <- ggplotGrob(ggplot() +
                       geom_line(data = Pred.df %>% filter(period == 2), aes(x = NDVI, y = NDVI.mean), linetype = "dashed") +
                       geom_line(data = Pred.df %>% filter(period == 3), aes(x = NDVI, y = NDVI.mean), linetype = "dotted") +
                       theme_few() +
-                      ylab(expression("Population Density / 100 m"^2)))
+                      ylab(expression("Population Abundance / 100 m"^2)))
 
 tiff(filename = "~/Monarchs/PostAnalysis/Figure3B.tiff", width = 6.5, height = 6.5, units = "in", res = 600)
 grid::grid.draw(Fig3B)
@@ -1137,7 +1159,7 @@ Fig3C <- ggplotGrob(ggplot() +
                       geom_line(data = Pred.df %>% filter(period == 3), aes(x = GDD, y = GDD.mean), linetype = "dotted") +
                       theme_few() +
                       xlab("GDD") +
-                      ylab(expression("Population Density / 100 m"^2)))
+                      ylab(expression("Population Abundance / 100 m"^2)))
 
 tiff(filename = "~/Monarchs/PostAnalysis/Figure3C.tiff", width = 6.5, height = 6.5, units = "in", res = 600)
 grid::grid.draw(Fig3C)

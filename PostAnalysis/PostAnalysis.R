@@ -96,7 +96,7 @@ rb.data <- rb.data %>% rename(type = variable) %>%
          type = recode(type, "IM.Estimate" = "Integrated", "PO.Estimate" = "Presence-only"))
 rb.data <- rb.data %>% pivot_wider(names_from = quantile, values_from = value)
 
-cbind(rb.data[,1:2], round(rb.data[,3:7] * 100, digits = 2))
+rb.data <- cbind(rb.data[,1:2], round(rb.data[,3:7] * 100, digits = 2))
 
 #----------#
 #-Figure 1-#
@@ -104,45 +104,15 @@ cbind(rb.data[,1:2], round(rb.data[,3:7] * 100, digits = 2))
 
 Fig1A <- ggplotGrob(ggplot() +
   gg(intensity1) +
-  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
+  scale_fill_gradientn(limit = c(0,3), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) +
-  geom_sf(data = pop1, fill = NA, col = "Black", size = 0.25, linetype = 0) +
-  # geom_sf(data = st_buffer(domain, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
-  theme_few() +
-  theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
-        legend.position = "none",
-        axis.title = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.spacing = unit(0, "in")))
-
-Fig1B <- ggplotGrob(ggplot() +
-  gg(intensity2) +
-  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
-  scale_x_continuous(expand = c(0,0)) +
-  scale_y_continuous(expand = c(0,0)) +
-  geom_sf(data = pop2, fill = NA, col = "Black", size = 0.25, linetype = 0) +
-  # geom_sf(data = st_buffer(domain2, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
-  theme_few() +
-  theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
-        legend.position = "none",
-        axis.title = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.spacing = unit(0, "in")))
-
-Fig1C <- ggplotGrob(ggplot() +
-  gg(intensity1) +
-  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
-  scale_x_continuous(expand = c(0,0)) +
-  scale_y_continuous(expand = c(0,0)) +
-  geom_sf(data = po1, fill = NA, col = "White", size = 0.75, linetype = 0) +
+  geom_sf(data = po1, fill = NA, col = "Black", size = 0.5, linetype = 0) +
   # geom_sf(data = st_buffer(domain1, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
   geom_sf(data = sites, fill = NA, col = "Black", size = 0.25, linetype = 2) +
-  geom_text(data = countdf, aes(Var1, Var2, label = count), color = "Black") +
+  # geom_text(data = countdf, aes(Var1, Var2, label = count), color = "Black") +
   theme_few() +
-  theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
+  theme(plot.margin = unit(c(0, 0, 0, 0), "in"),
         legend.position = "none",
         axis.title = element_blank(),
         axis.text = element_blank(),
@@ -150,15 +120,15 @@ Fig1C <- ggplotGrob(ggplot() +
         text = element_text(size = 14),
         panel.spacing = unit(0, "in")))
 
-Fig1D <- ggplotGrob(ggplot() +
+Fig1B <- ggplotGrob(ggplot() +
   gg(intensity2) +
-  scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
+  scale_fill_gradientn(limit = c(0,3), colors = brewer.pal(n = 9, name =  "YlGnBu")) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) +
-  geom_sf(data = po2, fill = NA, col = "White", size = 0.75, linetype = 0) +
+  geom_sf(data = po2, fill = NA, col = "Black", size = 0.5, linetype = 0) +
   # geom_sf(data = st_buffer(domain2, 0.05, endCapStyle = "SQUARE"), fill = NA, col = "Black", size = 1, linetype = "dashed") +  
   theme_few() +
-  theme(plot.margin = unit(c(-0.25, -0.25, 0, -0.25), "in"),
+  theme(plot.margin = unit(c(0, 0, 0, 0), "in"),
         legend.position = "none",
         axis.title = element_blank(),
         axis.text = element_blank(),
@@ -167,7 +137,7 @@ Fig1D <- ggplotGrob(ggplot() +
 
 Legend <- ggplotGrob(ggplot() +
           gg(intensity2) +
-          scale_fill_gradientn(limit = c(0,2), colors = brewer.pal(n = 9, name =  "YlGnBu"), name = "Expected population density",
+          scale_fill_gradientn(limit = c(0,3), colors = brewer.pal(n = 9, name =  "YlGnBu"), name = "Expected population abundance",
                                guide = guide_colorbar(ticks.colour = "Black",
                                                       frame.colour = "Black",
                                                       barwidth = 20,
@@ -179,23 +149,43 @@ Legend <- ggplotGrob(ggplot() +
           theme(text = element_text(size = 14),
                 legend.title = element_text(hjust = 0.5),
                 legend.position = "bottom",
-                legend.box.margin = unit(c(0.25, 0, 0, 0), "in"),
+                legend.box.margin = unit(c(0.25, 0, 0.25, 0), "in"),
                 axis.title = element_blank(),
                 axis.text = element_blank(),
                 axis.ticks = element_blank(),
                 panel.spacing = unit(0, "in")))$grob[[15]]
 
+Fig1C <- ggplotGrob(rb.data %>% filter(params %in% c("N1", "N2")) %>%
+                      ggplot(., aes(x = params)) +
+                      geom_hline(yintercept = 0, col = "red", size = 1) +
+                      geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type, color = type), 
+                                   stat = "identity", size = 0.75, alpha = 0.5) +
+                      facet_wrap(. ~ type, scales = 'free_y') + 
+                      # geom_hline(yintercept = 0, col = "black", size = 1) +
+                      scale_fill_manual(values = c("#add2eb", "#e6e6e6")) +
+                      scale_color_manual(values = c("#236490", "#808080")) +
+                      theme_few() +
+                      theme(plot.margin = unit(c(-0.1, 0.05, -0.1, 0), "in"),
+                            axis.title.y = element_text(margin = margin(0,0,0,0)),
+                            # axis.ticks.x = element_blank(),
+                            # axis.text.x = element_blank(),
+                            legend.position = "none",
+                            strip.text = element_text(color = "white")) +
+                      labs(y = "Percent Relative Bias", x = ""))
 
-Fig1E <- ggplotGrob(rb.data %>% filter(params %in% c("beta0", "beta1", "delta1")) %>%
+Fig1D <- ggplotGrob(rb.data %>% filter(params %in% c("beta0", "beta1", "delta1")) %>%
   ggplot(., aes(x = type)) +
-  geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type), 
-               stat = "identity", size = 0.75) +
-  facet_wrap(. ~ params, scales = 'free_y',) + 
-  geom_hline(yintercept = 0, col = "black", size = 1) +
-  scale_fill_manual(values = c("#2C7FB8", "grey")) +
+  geom_hline(yintercept = 0, col = "red", size = 1) +
+  geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type, color = type), 
+               stat = "identity", size = 0.75, alpha = 0.5) +
+  facet_wrap(. ~ params, scales = 'free_y') + 
+  # geom_hline(yintercept = 0, col = "red", size = 1) +
+  # scale_fill_manual(values = c("#2C7FB8", "grey")) +
+  scale_fill_manual(values = c("#add2eb", "#e6e6e6")) +
+  scale_color_manual(values = c("#236490", "#808080")) +
   theme_few() +
   theme(plot.margin = unit(c(-0.1, 0.05, -0.1, 0), "in"),
-        axis.title.y = element_text(margin = margin(0,0,0,0)),
+        # axis.title.y = element_text(margin = margin(0,0,0,0)),
         axis.ticks.x = element_blank(),
         axis.text.x = element_blank(),
         strip.text = element_text(color = "white"),
@@ -204,38 +194,25 @@ Fig1E <- ggplotGrob(rb.data %>% filter(params %in% c("beta0", "beta1", "delta1")
 
 param.lab <- c(expression(lambda[0]), expression(beta), expression(delta))
 
-loc <- Fig1E$layout[grep("strip", Fig1E$layout$name),1:4]
+loc <- Fig1D$layout[grep("strip", Fig1D$layout$name),1:4]
 loc <- loc %>% arrange(t,l)
 
 for(i in 1:3){
-  Fig1E <- gtable::gtable_add_grob(Fig1E, textGrob(param.lab[i], gp = gpar(fontsize = 14, fontface = 2)),
+  Fig1D <- gtable::gtable_add_grob(Fig1D, textGrob(param.lab[i], gp = gpar(fontsize = 14, fontface = 2)),
                                    t = loc$t[i], l = loc$l[i])
 }
 
 
-Fig1F <- ggplotGrob(rb.data %>% filter(params %in% c("N1", "N2")) %>%
-  ggplot(., aes(x = params)) +
-  geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type), 
-               stat = "identity", size = 0.75) +
-  facet_wrap(. ~ type, scales = 'free_y') + 
-  geom_hline(yintercept = 0, col = "black", size = 1) +
-  scale_fill_manual(values = c("#2C7FB8", "grey")) +
-  theme_few() +
-  theme(plot.margin = unit(c(-0.1, 0.05, -0.1, 0), "in"),
-        axis.title.y = element_text(margin = margin(0,0,0,0)),
-        # axis.ticks.x = element_blank(),
-        # axis.text.x = element_blank(),
-        legend.position = "none",
-        strip.text = element_text(color = "white")) +
-  labs(y = "", x = ""))
 
-Fig1F$heights <- Fig1E$heights
+
+Fig1C$heights <- Fig1D$heights
 
 Legend2 <- ggplotGrob(data %>% filter(params == "beta0") %>%
                         ggplot(., aes(x = type)) +
                         geom_boxplot(aes(ymin = qmin, lower = q25, middle = q50, upper = q75, ymax = qmax, fill = type), 
                                      stat = "identity", size = 0.75) +
-                        scale_fill_manual(values = c("#2C7FB8", "grey")) +
+                        scale_fill_manual(values = c("#add2eb", "#e6e6e6")) +
+                        scale_color_manual(values = c("#236490", "#808080")) +
                         theme_few() +
                         theme(text = element_text(size = 18),
                               plot.margin = unit(c(0, 0, 0, 0), "in"),
@@ -245,10 +222,10 @@ Legend2 <- ggplotGrob(data %>% filter(params == "beta0") %>%
 
 #Add letters to figures
 Figure1A <- arrangeGrob(Fig1A, top = grid::textGrob("A", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+                                                    y = unit(0, "in"), just=c("left","top"), vjust = 1, hjust = 0,
                                                     gp=grid::gpar(fontsize=18, fontface = 2)))
 Figure1B <- arrangeGrob(Fig1B, top = grid::textGrob("B", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+                                                    y = unit(0, "in"), just=c("left","top"), vjust = 1, hjust = 0,
                                                     gp=grid::gpar(fontsize=18, fontface = 2)))
 Figure1C <- arrangeGrob(Fig1C, top = grid::textGrob("C", x = unit(0, "in"), 
                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
@@ -256,20 +233,13 @@ Figure1C <- arrangeGrob(Fig1C, top = grid::textGrob("C", x = unit(0, "in"),
 Figure1D <- arrangeGrob(Fig1D, top = grid::textGrob("D", x = unit(0, "in"), 
                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
                                                     gp=grid::gpar(fontsize=18, fontface = 2)))
-Figure1E <- arrangeGrob(Fig1E, top = grid::textGrob("E", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0.5, hjust = 0,
-                                                    gp=grid::gpar(fontsize=18, fontface = 2)))
-Figure1F <- arrangeGrob(Fig1F, top = grid::textGrob("F", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0.5, hjust = 0,
-                                                    gp=grid::gpar(fontsize=18, fontface = 2)))
-
 #Save Figure 1
-tiff(file = "~/Monarchs/PostAnalysis/Figure1.tiff", res = 600, width = 6.5, height = 9, units = "in")
-grid.arrange(arrangeGrob(Figure1A, Figure1B, Figure1C, Figure1D, nrow = 2, padding = unit(0, "in")),
+tiff(file = "~/Monarchs/PostAnalysis/Figure1.tiff", res = 600, width = 6.5, height = 6.5, units = "in")
+grid.arrange(arrangeGrob(Figure1A, Figure1B, nrow = 1, padding = unit(0, "in")),
              Legend,
-             arrangeGrob(Figure1E, Figure1F, nrow = 1, padding = unit(0, "in")),
+             arrangeGrob(Figure1C, Figure1D, nrow = 1, padding = unit(0, "in")),
              Legend2,
-             layout_matrix = matrix(rep(c(1,1,1,1,1,1,1,2,3,3,3,4), 2), nrow = 12),
+             layout_matrix = matrix(rep(c(1,1,1,2,3,3,3,4), 2), nrow = 8),
              padding = unit(0, "in"))
 dev.off()
 
@@ -354,11 +324,14 @@ su.NDVI[,3] <- 0.0001*raster::values(raster::overlay(NDVIsummer[[7]], NDVIsummer
 sp.NDVI.stan <- (sp.NDVI - mean(c(unlist(sp.NDVI), unlist(su.NDVI))))/sd(c(unlist(sp.NDVI), unlist(su.NDVI)))
 su.NDVI.stan <- (su.NDVI - mean(c(unlist(sp.NDVI), unlist(su.NDVI))))/sd(c(unlist(sp.NDVI), unlist(su.NDVI)))
 
+load("Z:/Monarch/PostAnalysis/sp.NDVI.stan.Rds")
+load("Z:/Monarch/PostAnalysis/su.NDVI.stan.Rds")
+
 #GDD
 
-load("Z:/Monarch/DataFormatting/Daymet_sp.Rds")
-load("Z:/Monarch/DataFormatting/Daymet_su.Rds")
-
+# load("Z:/Monarch/DataFormatting/Daymet_sp.Rds")
+# load("Z:/Monarch/DataFormatting/Daymet_su.Rds")
+# 
 # library(httr)
 # 
 # prj.daymet <- "+init=epsg:4326"
@@ -414,36 +387,37 @@ load("Z:/Monarch/DataFormatting/Daymet_su.Rds")
 # for(i in 1:3){
 #   daymet.su <- rbind(daymet.su, do.call(rbind, mapply(FUN = daymet, long = su.long, lat = su.lat, start_date = su.start_date[i], end_date = su.end_date[i], SIMPLIFY = FALSE)))
 # }
+# 
+# daymet <- rbind(daymet.sp, daymet.su)
+# daymet <- daymet %>% mutate(Year = ifelse(grepl("2016", date), "2016",
+#                                           ifelse(grepl("2017", date), "2017", "2018")),
+#                             period = ifelse(grepl("04", date), 1,
+#                                             ifelse(grepl("05", date), 2, 3)))
+# 
+# daymet <- st_as_sf(daymet, coords = c("lon", "lat"))
+# 
+# for(i in 1:dim(daymet)[1]){
+#   if(!any(is.na(daymet[i,]))) next
+#   yrID <- daymet[i,] %>% select(Year) %>% .$Year %>% as.factor(.)
+#   pID <- daymet[i,] %>% select(period) %>% .$period %>% as.factor(.)
+#   tmp0 <- daymet %>% filter(Year == yrID & period == pID) %>% drop_na()
+#   tmp1 <- as.numeric(st_distance(daymet[i,], tmp0) %>% apply(., 1, order))
+#   tmp2 <- as.numeric(st_distance(daymet[i,], tmp0) %>% apply(., 1, sort))
+#   tmp3.gdd1 <- tmp0 %>% select(gdd1) %>% .$gdd1 %>% as.numeric(.)
+#   tmp3.gdd2 <- tmp0 %>% select(gdd2) %>% .$gdd2 %>% as.numeric(.)
+#   tmp4 <- (1/tmp2[1:3])/sum(1/tmp2[1:3])
+#   daymet[i,]$gdd1 <- tmp3.gdd1[tmp1[1:3]] %*% tmp4
+#   daymet[i,]$gdd2 <- tmp3.gdd2[tmp1[1:3]] %*% tmp4
+# }
+# 
+# daymet <- daymet %>% mutate(daysaccum = ifelse(period == 1, 35, 42),
+#                             gdd1.avg = gdd1/daysaccum * 14,
+#                             gdd2.avg = gdd2/daysaccum * 14)
+# 
+# daymet$gdd1.stan <- (daymet$gdd1.avg - mean(daymet$gdd1.avg))/sd(daymet$gdd1.avg)
+# daymet$gdd2.stan <- (daymet$gdd2.avg - mean(daymet$gdd2.avg))/sd(daymet$gdd2.avg)
 
-daymet <- rbind(daymet.sp, daymet.su)
-daymet <- daymet %>% mutate(Year = ifelse(grepl("2016", date), "2016",
-                                          ifelse(grepl("2017", date), "2017", "2018")),
-                            period = ifelse(grepl("04", date), 1,
-                                            ifelse(grepl("05", date), 2, 3)))
-
-daymet <- st_as_sf(daymet, coords = c("lon", "lat"))
-
-for(i in 1:dim(daymet)[1]){
-  if(!any(is.na(daymet[i,]))) next
-  yrID <- daymet[i,] %>% select(Year) %>% .$Year %>% as.factor(.)
-  pID <- daymet[i,] %>% select(period) %>% .$period %>% as.factor(.)
-  tmp0 <- daymet %>% filter(Year == yrID & period == pID) %>% drop_na()
-  tmp1 <- as.numeric(st_distance(daymet[i,], tmp0) %>% apply(., 1, order))
-  tmp2 <- as.numeric(st_distance(daymet[i,], tmp0) %>% apply(., 1, sort))
-  tmp3.gdd1 <- tmp0 %>% select(gdd1) %>% .$gdd1 %>% as.numeric(.)
-  tmp3.gdd2 <- tmp0 %>% select(gdd2) %>% .$gdd2 %>% as.numeric(.)
-  tmp4 <- (1/tmp2[1:3])/sum(1/tmp2[1:3])
-  daymet[i,]$gdd1 <- tmp3.gdd1[tmp1[1:3]] %*% tmp4
-  daymet[i,]$gdd2 <- tmp3.gdd2[tmp1[1:3]] %*% tmp4
-}
-
-daymet <- daymet %>% mutate(daysaccum = ifelse(period == 1, 35, 42),
-                            gdd1.avg = gdd1/daysaccum * 14,
-                            gdd2.avg = gdd2/daysaccum * 14)
-
-daymet$gdd1.stan <- (daymet$gdd1.avg - mean(daymet$gdd1.avg))/sd(daymet$gdd1.avg)
-daymet$gdd2.stan <- (daymet$gdd2.avg - mean(daymet$gdd2.avg))/sd(daymet$gdd2.avg)
-
+load("Z:/Monarch/PostAnalysis/daymet.Rds")
 
 daymet$NDVI <- NA
 
@@ -516,8 +490,8 @@ daymet[daymet$period == 3,"beta4"] <- beta4[3]
 daymet <- daymet %>% mutate(pred.fix = beta + beta1 * NDVI + beta2 * NDVI * NDVI + beta3 * gdd2.stan + beta4 * gdd2.stan * gdd2.stan,
                             pred.ran = pred.fix + omega)
 
-daymet <- daymet %>% mutate(pred.fix = exp(pred.fix),
-                            pred.ran = exp(pred.ran))
+# daymet <- daymet %>% mutate(pred.fix = exp(pred.fix),
+#                             pred.ran = exp(pred.ran))
 
 
 # sp.Pred <- cbind(exp(beta[1] + beta1[1] * sp.NDVI[,1] + beta2[1] * sp.NDVI[,1] * sp.NDVI[,1] + sp.GridA %*% omg_sp1),
@@ -624,7 +598,7 @@ Fig2A <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_sp, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0.25,0,0,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -644,7 +618,7 @@ Fig2B <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_sp, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0.25,0,0,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -657,7 +631,7 @@ Fig2C <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_su, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0.25,0,0,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -670,7 +644,7 @@ Fig2D <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_sp, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0.125,0,0.125,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -683,7 +657,7 @@ Fig2E <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_sp, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0.125,0,0.125,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -696,7 +670,7 @@ Fig2F <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_su, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0.125,0,0.125,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -709,7 +683,7 @@ Fig2G <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_sp, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0,0,0.25,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -722,7 +696,7 @@ Fig2H <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_sp, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0,0,0.25,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -735,7 +709,7 @@ Fig2I <- ggplotGrob(ggplot() +
                       geom_sf(data = inverse_su, fill = "white", color = NA) + 
                       scale_color_gradientn(colors = pal4, name = expression("Population Density / 10 m"^2), limits = c(log(0.0001), log(0.075)), oob = scales::squish, label = rounder) +
                       theme_void() +
-                      theme(plot.margin = margin(0,0,0,0, "in"),
+                      theme(plot.margin = margin(0,0,0.25,0, "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
                             axis.text = element_blank(),
@@ -745,49 +719,49 @@ Fig2I <- ggplotGrob(ggplot() +
 library(grid)
 library(gridExtra)
 
-Figure2A <- arrangeGrob(Fig2A, top = grid::textGrob("A", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2B <- arrangeGrob(Fig2B, top = grid::textGrob("B", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2C <- arrangeGrob(Fig2C, top = grid::textGrob("C", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2D <- arrangeGrob(Fig2D, top = grid::textGrob("D", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2E <- arrangeGrob(Fig2E, top = grid::textGrob("E", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2F <- arrangeGrob(Fig2F, top = grid::textGrob("F", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2G <- arrangeGrob(Fig2G, top = grid::textGrob("G", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2H <- arrangeGrob(Fig2H, top = grid::textGrob("H", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
-Figure2I <- arrangeGrob(Fig2I, top = grid::textGrob("I", x = unit(0, "in"), 
-                                                    y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
-                                                    gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2A <- arrangeGrob(Fig2A, top = grid::textGrob("A", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2B <- arrangeGrob(Fig2B, top = grid::textGrob("B", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2C <- arrangeGrob(Fig2C, top = grid::textGrob("C", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2D <- arrangeGrob(Fig2D, top = grid::textGrob("D", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2E <- arrangeGrob(Fig2E, top = grid::textGrob("E", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2F <- arrangeGrob(Fig2F, top = grid::textGrob("F", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2G <- arrangeGrob(Fig2G, top = grid::textGrob("G", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2H <- arrangeGrob(Fig2H, top = grid::textGrob("H", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
+# Figure2I <- arrangeGrob(Fig2I, top = grid::textGrob("I", x = unit(0, "in"), 
+#                                                     y = unit(0, "in"), just=c("left","top"), vjust = 0, hjust = 0,
+#                                                     gp=grid::gpar(fontsize=14, fontface = 2)))
 
 tiff(file = "~/Monarchs/PostAnalysis/Figure2_new.tiff", res = 600, width = 6.5, height = 5.5, units = "in")
-grid.arrange(Figure2A, Figure2B, Figure2C, 
-             Figure2D, Figure2E, Figure2F, 
-             Figure2G, Figure2H, Figure2I, 
+grid.arrange(Fig2A, Fig2B, Fig2C, 
+             Fig2D, Fig2E, Fig2F, 
+             Fig2G, Fig2H, Fig2I, 
              Legend2,
              layout_matrix = matrix(c(1,4,7,
                                       2,5,8,
                                       3,6,9,
                                       3,6,9,
                                       10,10,10), nrow = 3))
-grid.text("Early Spring", x = unit(0.75, "in"), 
+grid.text("early spring", x = unit(0.75, "in"), 
           y = unit(5.325, "in"),gp = gpar(fontsize=12))
-grid.text("Late Spring", x = unit(2, "in"), 
+grid.text("late spring", x = unit(2, "in"), 
           y = unit(5.325, "in"),gp = gpar(fontsize=12))
-grid.text("Early Summer", x = unit(3.5, "in"), 
+grid.text("early summer", x = unit(3.5, "in"), 
           y = unit(5.325, "in"),gp = gpar(fontsize=12))
 grid.text("2016", x = unit(0.125, "in"), rot = 90,
           y = unit(4.5, "in"),gp = gpar(fontsize=12))
@@ -795,7 +769,7 @@ grid.text("2017", x = unit(0.125, "in"), rot = 90,
           y = unit(2.75, "in"),gp = gpar(fontsize=12))
 grid.text("2018", x = unit(0.125, "in"), rot = 90,
           y = unit(1, "in"),gp = gpar(fontsize=12))
-grid.text(expression("Population Density / 100 m"^2), x = unit(5.325, "in"), rot = 90,
+grid.text(expression("Population Abundance / 100 m"^2), x = unit(5.325, "in"), rot = 90,
           y = unit(2.5, "in"),gp = gpar(fontsize=14))
 dev.off()
 
@@ -890,8 +864,8 @@ dev.off()
 # 
 
 #Figure 3
-pred.GDD <- matrix(seq(0, 225, length.out = 100) , 100 , 100)
-pred.NDVI <- t(matrix(seq(0, 0.8, length.out = 100) , 100 , 100))
+pred.GDD <- matrix(seq(50, 200, length.out = 100) , 100 , 100)
+pred.NDVI <- t(matrix(seq(0.2, 0.7, length.out = 100) , 100 , 100))
 
 mean.GDD <- mean(c(Data$gdd2, NodeDF$gdd.avg*14))
 sd.GDD <- sd(c(Data$gdd2, NodeDF$gdd.avg*14))
@@ -911,8 +885,8 @@ su.Pred <- exp(beta[9] + beta1[3] * pred.NDVI + beta2[3] * pred.NDVI * pred.NDVI
 pal4 <- colorRampPalette(RColorBrewer::brewer.pal(9, 'Greens'))(100)
 pal5 <- colorRampPalette(RColorBrewer::brewer.pal(11, "RdBu"))(100)
 
-gdd.temp <- (Data[Data$period == 1, "gdd2"]$gdd2 - mean.GDD)/sd.GDD
-ndvi.temp <- (Data[Data$period == 1, "NDVI"]$NDVI - mean.NDVI)/sd.NDVI
+gdd.temp <- (Data[Data$period == 1 & Data$gdd2 > 50 & Data$gdd2 < 200 & Data$NDVI > 0.2 & Data$NDVI < 0.7, "gdd2"]$gdd2 - mean.GDD)/sd.GDD
+ndvi.temp <- (Data[Data$period == 1 & Data$gdd2 > 50 & Data$gdd2 < 200 & Data$NDVI > 0.2 & Data$NDVI < 0.7, "NDVI"]$NDVI - mean.NDVI)/sd.NDVI
 grid.loc <- full_join(reshape2::melt(pred.NDVI), reshape2::melt(pred.GDD), by = c("Var1", "Var2"))
 sp1.points <- matrix(NA, nrow = length(gdd.temp), ncol = 2)
 for(i in 1:length(gdd.temp)){
@@ -922,35 +896,39 @@ for(i in 1:length(gdd.temp)){
 vline <- which.min(abs(daymet %>% st_drop_geometry(.) %>% 
                          filter(period == 1) %>% 
                          summarise(mu = mean(gdd2.avg)) %>% select(mu) %>% .$mu -
-                         seq(0, 225, length.out = 100)))
+                         seq(50, 200, length.out = 100)))
 
 hline <- which.min(abs(daymet %>% st_drop_geometry(.) %>% 
                          filter(period == 1) %>% 
                          summarise(mu = mean(NDVI)) %>% select(mu) %>% .$mu -
-                         seq(0, 0.8, length.out = 100)))
+                         seq(0.2, 0.7, length.out = 100)))
 
 
 
 Fig3D <- ggplotGrob(ggplot() +
                       geom_raster(data = reshape2::melt(sp1.Pred), aes(x = Var1, y = Var2, fill = value)) +
-                      scale_fill_gradientn(colors = pal4, limits = c(0,0.05), na.value = RColorBrewer::brewer.pal(9, 'Greens')[9]) + 
-                      geom_point(data = as.data.frame(sp1.points), aes(x = V1, y = V2), shape = 3, size = 1) +
-                      scale_y_continuous(expand = c(0,0), 
-                                         labels = round(seq(0, 0.8, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                      scale_fill_gradientn(colors = pal4, limits = c(0,0.04), breaks = c(0, 0.02, 0.04), na.value = RColorBrewer::brewer.pal(9, 'Greens')[9]) +
+                      # geom_point(data = as.data.frame(sp1.points), aes(x = V1, y = V2), shape = 3, size = 1) +
+                      scale_y_continuous(expand = c(0,0),
+                                         # labels = round(seq(0.2, 0.7, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         labels = c(0.2, 0.45, 0.7), breaks = c(1, 50, 100)) +
                       scale_x_continuous(expand = c(0,0),
-                                         labels = round(seq(0, 225, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         # labels = round(seq(50, 200, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         labels = c(50,125,200), breaks = c(1, 50, 100)) +
                       theme_bw() +
-                      theme(plot.margin = margin(0.05,0.05,0.25,0.25, unit = "in"),
+                      theme(plot.margin = margin(0,0.125,0,0, unit = "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
-                            # legend.position = "bottom",
-                            legend.key.width = unit(0.125, "in"),
-                            legend.key.height = unit(0.5, "in"),
-                            legend.title = element_blank()
+                            legend.position = "bottom",
+                            legend.key.width = unit(0.25, "in"),
+                            legend.key.height = unit(0.125, "in"),
+                            legend.title = element_blank(),
+                            plot.title = element_text(hjust = 0.5)
                       ) + 
                       guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black"))+
                       xlab("GDD") +
                       ylab("NDVI") +
+                      ggtitle("early spring") +
                       geom_vline(aes(xintercept = vline), linetype = "dashed") + 
                       geom_hline(aes(yintercept = hline), linetype = "dashed"))
 
@@ -959,8 +937,8 @@ grid::grid.draw(Fig3D)
 dev.off()
 
 
-gdd.temp <- (Data[Data$period == 2, "gdd2"]$gdd2 - mean.GDD)/sd.GDD
-ndvi.temp <- (Data[Data$period == 2, "NDVI"]$NDVI - mean.NDVI)/sd.NDVI
+gdd.temp <- (Data[Data$period == 2 & Data$gdd2 > 50 & Data$gdd2 < 200 & Data$NDVI > 0.2 & Data$NDVI < 0.7, "gdd2"]$gdd2 - mean.GDD)/sd.GDD
+ndvi.temp <- (Data[Data$period == 2 & Data$gdd2 > 50 & Data$gdd2 < 200 & Data$NDVI > 0.2 & Data$NDVI < 0.7, "NDVI"]$NDVI - mean.NDVI)/sd.NDVI
 grid.loc <- full_join(reshape2::melt(pred.NDVI), reshape2::melt(pred.GDD), by = c("Var1", "Var2"))
 sp2.points <- matrix(NA, nrow = length(gdd.temp), ncol = 2)
 for(i in 1:length(gdd.temp)){
@@ -970,34 +948,38 @@ for(i in 1:length(gdd.temp)){
 vline <- which.min(abs(daymet %>% st_drop_geometry(.) %>% 
                          filter(period == 2) %>% 
                          summarise(mu = mean(gdd2.avg)) %>% select(mu) %>% .$mu -
-                         seq(0, 225, length.out = 100)))
+                         seq(50, 200, length.out = 100)))
 
 hline <- which.min(abs(daymet %>% st_drop_geometry(.) %>% 
                          filter(period == 2) %>% 
                          summarise(mu = mean(NDVI)) %>% select(mu) %>% .$mu -
-                         seq(0, 0.8, length.out = 100)))
+                         seq(0.2, 0.7, length.out = 100)))
 
 
 Fig3E <- ggplotGrob(ggplot() +
                       geom_raster(data = reshape2::melt(sp2.Pred), aes(x = Var1, y = Var2, fill = value)) +
-                      scale_fill_gradientn(colors = pal4) +  
-                      geom_point(data = as.data.frame(sp2.points), aes(x = V1, y = V2), shape = 3, size = 1) +
-                      scale_y_continuous(expand = c(0,0), 
-                                         labels = round(seq(0, 0.8, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                      scale_fill_gradientn(colors = pal4, limits = c(0,0.04), breaks = c(0, 0.02, 0.04), na.value = RColorBrewer::brewer.pal(9, 'Greens')[9]) +
+                      # geom_point(data = as.data.frame(sp2.points), aes(x = V1, y = V2), shape = 3, size = 1) +
+                      scale_y_continuous(expand = c(0,0),
+                                         # labels = round(seq(0.2, 0.7, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         labels = c(0.2, 0.45, 0.7), breaks = c(1, 50, 100)) +
                       scale_x_continuous(expand = c(0,0),
-                                         labels = round(seq(0, 225, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         # labels = round(seq(50, 200, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         labels = c(50,125,200), breaks = c(1, 50, 100)) +
                       theme_bw() +
-                      theme(plot.margin = margin(0.05,0.05,0.25,0.25, unit = "in"),
+                      theme(plot.margin = margin(0,0.125,0,0, unit = "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
-                            # legend.position = "bottom",
-                            legend.key.width = unit(0.125, "in"),
-                            legend.key.height = unit(0.5, "in"),
-                            legend.title = element_blank()
+                            legend.position = "bottom",
+                            legend.key.width = unit(0.25, "in"),
+                            legend.key.height = unit(0.125, "in"),
+                            legend.title = element_blank(),
+                            plot.title = element_text(hjust = 0.5)
                       ) + 
                       guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
                       xlab("GDD") +
                       ylab("NDVI") +
+                      ggtitle("late spring") +
                       geom_vline(aes(xintercept = vline), linetype = "dashed") + 
                       geom_hline(aes(yintercept = hline), linetype = "dashed"))
 
@@ -1005,8 +987,8 @@ tiff(filename = "~/Monarchs/PostAnalysis/Figure3E.tiff", width = 6.5, height = 6
 grid::grid.draw(Fig3E)
 dev.off()
 
-gdd.temp <- (Data[Data$period == 3, "gdd2"]$gdd2 - mean.GDD)/sd.GDD
-ndvi.temp <- (Data[Data$period == 3, "NDVI"]$NDVI - mean.NDVI)/sd.NDVI
+gdd.temp <- (Data[Data$period == 3 & Data$gdd2 > 50 & Data$gdd2 < 200 & Data$NDVI > 0.2 & Data$NDVI < 0.7, "gdd2"]$gdd2 - mean.GDD)/sd.GDD
+ndvi.temp <- (Data[Data$period == 3 & Data$gdd2 > 50 & Data$gdd2 < 200 & Data$NDVI > 0.2 & Data$NDVI < 0.7, "NDVI"]$NDVI - mean.NDVI)/sd.NDVI
 grid.loc <- full_join(reshape2::melt(pred.NDVI), reshape2::melt(pred.GDD), by = c("Var1", "Var2"))
 su.points <- matrix(NA, nrow = length(gdd.temp), ncol = 2)
 for(i in 1:length(gdd.temp)){
@@ -1016,34 +998,37 @@ for(i in 1:length(gdd.temp)){
 vline <- which.min(abs(daymet %>% st_drop_geometry(.) %>% 
                          filter(period == 3) %>% 
                          summarise(mu = mean(gdd2.avg)) %>% select(mu) %>% .$mu -
-                         seq(0, 225, length.out = 100)))
+                         seq(50, 200, length.out = 100)))
 
 hline <- which.min(abs(daymet %>% st_drop_geometry(.) %>% 
                          filter(period == 3) %>% 
                          summarise(mu = mean(NDVI)) %>% select(mu) %>% .$mu -
-                         seq(0, 0.8, length.out = 100)))
+                         seq(0.2, 0.7, length.out = 100)))
 
 Fig3F <- ggplotGrob(ggplot() +
                       geom_raster(data = reshape2::melt(su.Pred), aes(x = Var1, y = Var2, fill = value)) +
-                      scale_fill_gradientn(colors = pal4) + 
-                      geom_point(data = as.data.frame(su.points), aes(x = V1, y = V2), shape = 3, size = 1) +
-                      # scale_y_continuous(labels=LETTERS, breaks=1:26, limits=c(1,26))
-                      scale_y_continuous(expand = c(0,0), 
-                                         labels = round(seq(0, 0.8, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                      scale_fill_gradientn(colors = pal4, limits = c(0,0.04), breaks = c(0, 0.02, 0.04), na.value = RColorBrewer::brewer.pal(9, 'Greens')[9]) +
+                      # geom_point(data = as.data.frame(su.points), aes(x = V1, y = V2), shape = 3, size = 1) +
+                      scale_y_continuous(expand = c(0,0),
+                                         # labels = round(seq(0.2, 0.7, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         labels = c(0.2, 0.45, 0.7), breaks = c(1, 50, 100)) +
                       scale_x_continuous(expand = c(0,0),
-                                         labels = round(seq(0, 255, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         # labels = round(seq(50, 200, length.out = 100)[c(1,25,50,75,100)], digits = 2)) +
+                                         labels = c(50,125,200), breaks = c(1, 50, 100)) +
                       theme_bw() +
-                      theme(plot.margin = margin(0.05,0.05,0.25,0.25, unit = "in"),
+                      theme(plot.margin = margin(0,0.125,0,0, unit = "in"),
                             panel.background = element_blank(),
                             panel.grid = element_blank(),
-                            # legend.position = "bottom",
-                            legend.key.width = unit(0.125, "in"),
-                            legend.key.height = unit(0.5, "in"),
-                            legend.title = element_blank()
+                            legend.position = "bottom",
+                            legend.key.width = unit(0.25, "in"),
+                            legend.key.height = unit(0.125, "in"),
+                            legend.title = element_blank(),
+                            plot.title = element_text(hjust = 0.5)
                       ) + 
                       guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
                       xlab("GDD") +
-                      ylab("NDVI")  +
+                      ylab("NDVI") +
+                      ggtitle("early summer") +
                       geom_vline(aes(xintercept = vline), linetype = "dashed") + 
                       geom_hline(aes(yintercept = hline), linetype = "dashed"))
 
@@ -1073,13 +1058,20 @@ Effect[12,4:5] <- confint(tmbprofile(obj1, lincomb = c(rep(0,12),1,rep(0,23))))
 
 Fig3A <- ggplotGrob(ggplot(Effect, aes(y = mean.den, x = param, col = period)) +
                       geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-                      geom_point(position = position_dodge(0.5)) +
+                      geom_point(position = position_dodge(0.5), size = 0.75) +
                       geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(0.5), width = 0.25) +
-                      scale_color_manual(name = "Stage", values = RColorBrewer::brewer.pal(4, 'Greens')[2:4]) +
+                      scale_color_manual(labels = c("early \nspring", "late \nspring", "early \nsummer"), values = RColorBrewer::brewer.pal(4, 'Greens')[2:4]) +
                       scale_x_discrete(labels = c("beta1" = "NDVI", "beta2" = expression(NDVI^2),
                                                   "beta3" = "GDD", "beta4" = expression(GDD^2))) +
                       theme_few() +
-                      theme(legend.position = "top") +
+                      theme(legend.title = element_blank(),
+                            legend.position = "top",
+                            # legend.position = c(1,1),
+                            legend.justification = c(5,0),
+                            legend.background = element_blank(),
+                            legend.margin = margin(-2,-2,-2,-2),
+                            legend.text = element_text(size = 8),
+                            axis.text.x.bottom = element_text(vjust = 0)) +
                       xlab("") +
                       ylab("Covariate effect (log-scale)"))
 
@@ -1090,8 +1082,8 @@ dev.off()
 
 #Figure XX
 
-pred.GDD <- seq(0, 225, length.out = 100)
-pred.NDVI <- seq(0, 0.8, length.out = 100)
+pred.GDD <- seq(50, 200, length.out = 100)
+pred.NDVI <- seq(0.2, 0.7, length.out = 100)
 
 pred.GDD <- (pred.GDD - mean.GDD)/sd.GDD
 pred.NDVI <- (pred.NDVI - mean.NDVI)/sd.NDVI
@@ -1123,8 +1115,8 @@ sp1.GDD.upper <- exp(beta[7] + Effect[7,5] * pred.GDD + Effect[10,5] * pred.GDD 
 sp2.GDD.upper <- exp(beta[8] + Effect[8,5] * pred.GDD + Effect[11,5] * pred.GDD * pred.GDD)
 su.GDD.upper <- exp(beta[9] + Effect[9,5] * pred.GDD + Effect[12,5] * pred.GDD * pred.GDD)
 
-pred.GDD <- seq(0, 225, length.out = 100)
-pred.NDVI <- seq(0, 0.8, length.out = 100)
+pred.GDD <- seq(50, 200, length.out = 100)
+pred.NDVI <- seq(0.2, 0.7, length.out = 100)
 
 Pred.df <- data.frame(NDVI.mean = c(sp1.NDVI.mean, sp2.NDVI.mean, su.NDVI.mean),
                       NDVI.lower = c(sp1.NDVI.lower, sp2.NDVI.lower, su.NDVI.lower),
@@ -1143,8 +1135,26 @@ Fig3B <- ggplotGrob(ggplot() +
                       geom_line(data = Pred.df %>% filter(period == 1), aes(x = NDVI, y = NDVI.mean)) +
                       geom_line(data = Pred.df %>% filter(period == 2), aes(x = NDVI, y = NDVI.mean), linetype = "dashed") +
                       geom_line(data = Pred.df %>% filter(period == 3), aes(x = NDVI, y = NDVI.mean), linetype = "dotted") +
+                      ylim(0,0.04) +
                       theme_few() +
-                      ylab(expression("Population Abundance / 100 m"^2)))
+                      ylab(expression("Abundance / 100 m"^2)))
+
+Fig3B <- ggplotGrob(ggplot() +
+                      geom_line(data = Pred.df, aes(x = NDVI, y = NDVI.mean, linetype = period)) +
+                      geom_ribbon(data = Pred.df, aes(x = NDVI, ymin = NDVI.lower, ymax = NDVI.upper, fill = period), alpha = 0.75) +
+                      scale_fill_manual(labels = c("early \nspring", "late \nspring", "early \nsummer"), values = RColorBrewer::brewer.pal(4, 'Greens')[2:4]) +
+                      scale_linetype_manual(labels = c("early \nspring", "late \nspring", "early \nsummer"), values = c("solid", "dashed", "dotted")) +
+                      ylim(0,0.04) + 
+                      theme_few() +
+                      theme(legend.title = element_blank(),
+                            legend.position = "top",
+                            # legend.position = c(1,1),
+                            legend.justification = c(1,0),
+                            legend.background = element_blank(),
+                            legend.margin = margin(-2,-2,-2,-2),
+                            legend.text = element_text(size = 8),
+                            axis.text.x.bottom = element_text(vjust = 0)) +
+                      ylab(expression("Abundance / 100 m"^2)))
 
 tiff(filename = "~/Monarchs/PostAnalysis/Figure3B.tiff", width = 6.5, height = 6.5, units = "in", res = 600)
 grid::grid.draw(Fig3B)
@@ -1157,9 +1167,27 @@ Fig3C <- ggplotGrob(ggplot() +
                       geom_line(data = Pred.df %>% filter(period == 1), aes(x = GDD, y = GDD.mean)) +
                       geom_line(data = Pred.df %>% filter(period == 2), aes(x = GDD, y = GDD.mean), linetype = "dashed") +
                       geom_line(data = Pred.df %>% filter(period == 3), aes(x = GDD, y = GDD.mean), linetype = "dotted") +
+                      ylim(0, 0.04) +
                       theme_few() +
                       xlab("GDD") +
-                      ylab(expression("Population Abundance / 100 m"^2)))
+                      ylab(expression("Abundance / 100 m"^2)))
+
+Fig3C <- ggplotGrob(ggplot() +
+                      geom_line(data = Pred.df, aes(x = GDD, y = GDD.mean, linetype = period)) +
+                      geom_ribbon(data = Pred.df, aes(x = GDD, ymin = GDD.lower, ymax = GDD.upper, fill = period), alpha = 0.75) +
+                      scale_fill_manual(labels = c("early \nspring", "late \nspring", "early \nsummer"), values = RColorBrewer::brewer.pal(4, 'Greens')[2:4]) +
+                      scale_linetype_manual(labels = c("early \nspring", "late \nspring", "early \nsummer"), values = c("solid", "dashed", "dotted")) +
+                      ylim(0,0.04) + 
+                      theme_few() +
+                      theme(legend.title = element_blank(),
+                            legend.position = "top",
+                            # legend.position = c(1,1),
+                            legend.justification = c(1,0),
+                            legend.background = element_blank(),
+                            legend.margin = margin(-2,-2,-2,-2),
+                            legend.text = element_text(size = 8),
+                            axis.text.x.bottom = element_text(vjust = 0)) +
+                      ylab(expression("Abundance / 100 m"^2)))
 
 tiff(filename = "~/Monarchs/PostAnalysis/Figure3C.tiff", width = 6.5, height = 6.5, units = "in", res = 600)
 grid::grid.draw(Fig3C)
@@ -1187,8 +1215,8 @@ Figure3F <- arrangeGrob(Fig3F, top = grid::textGrob("F", x = unit(0, "in"),
 
 
 
-tiff(filename = "~/Monarchs/PostAnalysis/Figure3.tiff", width = 8, height = 11.5, units = "in", res = 600)
-grid.arrange(Figure3A, Figure3B, Figure3C, Figure3D, Figure3E, Figure3F, layout_matrix = matrix(c(1,2,3,4,5,6), nrow = 3))
+tiff(filename = "~/Monarchs/PostAnalysis/Figure3.tiff", width = 8, height = 6, units = "in", res = 600)
+grid.arrange(Figure3A, Figure3B, Figure3C, Figure3D, Figure3E, Figure3F, layout_matrix = matrix(c(1,2,3,4,5,6), nrow = 2, byrow = T))
 dev.off()
 
 # ggplot() + 

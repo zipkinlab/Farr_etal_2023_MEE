@@ -10,7 +10,7 @@
 #-----------#
 
 library(spatstat)
-library(RandomFields)
+library(RandomFields) #Package is deprecated from CRAN
 library(INLA)
 library(rgeos)
 library(TMB)
@@ -43,12 +43,6 @@ expit <- function(eta)
 win <- owin(c(0, 3), c(0, 3)) #Window
 loc.d <- 3 * cbind(c(0, 1, 1, 0, 0), c(0, 0, 1, 1, 0)) #Coordinates
 
-#Domain 1
-#win1 <- owin(c(1, 2.75), c(0.25, 2))
-
-#Domain 2
-#win2 <- owin(c(0, 3), c(0, 3), poly = list(x=c(0.25,0.75,0.75,2.75,2.75,0.25), y=c(0.25,0.25,2.25,2.25,2.75,2.75)))
-
 #Number of pixels
 npix <- 300
 spatstat.options(npixel = npix)
@@ -59,10 +53,6 @@ mesh <- inla.mesh.2d(loc.domain = loc.d,
                      max.edge = c(0.3, 0.7),
                      cutoff = 0.05)
 
-# mesh1 <- inla.mesh.2d(boundary = inla.sp2segment(as(win1, "SpatialPolygons")), max.edge = 0.3, cutoff = 0.05)
-# 
-# mesh2 <- inla.mesh.2d(boundary = inla.sp2segment(as(win2, "SpatialPolygons")), max.edge = 0.3, cutoff = 0.05)
-
 #X range of mesh
 x0 <- seq(min(mesh$loc[, 1]), max(mesh$loc[, 1]), length = npix)
 
@@ -72,7 +62,6 @@ y0 <- seq(min(mesh$loc[, 2]), max(mesh$loc[, 2]), length = npix)
 #Mesh window
 Mwin <- owin(c(min(x0), max(x0)), c(min(y0), max(y0)))
 
-for(iter in 1:500){
 #---------------#
 #-Simulate LGCP-#
 #---------------#
@@ -85,16 +74,10 @@ beta[2] <- runif(1,0.5,1.5)
 #Change in intensity
 delta <- 1
 
-# delta <- runif(1,-1,1)
-
 #Parameters of thinning function
 alpha <- c(logit(0.01), 0.85)
 
-# alpha[2] <- runif(1,0.75,1.25)
-
-
 #Ecological covariate
-#set.seed(100)
 RandomFields::RFoptions(spConform=FALSE)
 xcov1 <- RFsimulate(model = RMgauss(scale = 1.25), x = x0, y = y0, grid = TRUE)
 xcov2 <- xcov1 + RFsimulate(model = RMgauss(var = 0.5, scale = 9.5), x = x0, y = y0, grid = TRUE)
@@ -105,31 +88,27 @@ x2 <- (xcov2 - mean(c(xcov1, xcov2))/sd(c(xcov1, xcov2)))
 
 #Thinning covariate
 pcov <- RFsimulate(model = RMgauss(scale = 1), x = x0, y = y0, grid = TRUE)
+#Alternatively load thinning covariate
 # load("pcov.Rds")
+#Standardize covariate
 pcov <- (pcov - min(pcov))/sd(pcov)
-# set.seed(NULL)
-
 #Range of Matern covaraince
 range <- 1.2
-# range <- runif(1, 1, 3)
 #Scale of Matern covariance
 kappa <- sqrt(8)/range
 #Variance of Matern covaraince
 sigma2 <- 0.2
-# sigma2 <- runif(1,0.1,0.5)
 #Precision of Matern covariance
 tau <- sqrt(1/(sigma2*4*pi*kappa*kappa))
 # tau <- exp(0.5 * log(1/(4*pi)) - log(sqrt(sigma2)) - log(kappa))
+
 #Smoothness of Matern covaraince
 nu <- 1
 
-#Simulate spatial covariance (look @ page 45)
-# zcov <- RFsimulate(model = RMmatern(var = sigma2, scale = 1/kappa, nu = nu), x = x0, y = y0, grid = TRUE)
+#Simulate spatial covariance
 
 zcov <- RFsimulate(model = RMgauss(var = sigma2, scale = 1/kappa), x = x0, y = y0, grid = TRUE)
-
-
-# load(file = "Z:/Monarch/DataAnalysis/Simulation/zcov.Rds")
+# zcov <- RFsimulate(model = RMmatern(var = sigma2, scale = 1/kappa, nu = nu), x = x0, y = y0, grid = TRUE)
 # load("zcov.Rds")
 
 #Intensity function
@@ -470,8 +449,5 @@ message("finished")
 ID <- length(list.files("Z:/Monarch/DataAnalysis/Simulation/Output/")) + 1
 save(out, file = paste("Z:/Monarch/DataAnalysis/Simulation/Output/output", ID, ".Rds", sep=""))
 
-# tmp <- list(summary(out1), summary(out2), summary(out3), summary(out4))
-# save(tmp, file = "tmp_out.Rds")
-
 message("saved")
-print(iter)}
+print(iter)

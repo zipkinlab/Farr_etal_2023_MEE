@@ -12,24 +12,27 @@ library(sf)
 library(INLA)
 library(TMB)
 
-#Function to create dual mesh (original code from Krainski et al. 2018)
-source("~/Monarchs/DataAnalysis/rDualMesh.R")
+#-----------#
+#-Functions-#
+#-----------#
+
+source("rDualMesh.R")
 
 #-----------#
 #-Load data-#
 #-----------#
 
 #Spring domain
-domain_sp <- st_read("~/Monarchs/DataFormatting/BaseData/Domain/Domain_Spring.shp")
+domain_sp <- st_read("../DataFormatting/SpatialDomains/Domain_Spring.shp")
 
 #Summer domain
-domain_su <- st_read("~/Monarchs/DataFormatting/BaseData/Domain/Domain_Summer.shp")
+domain_su <- st_read("../DataFormatting/SpatialDomains/Domain_Summer.shp")
 
 #Monarch data
-load(file = "~/Monarchs/DataFormatting/FormattedData_2022.Rdata")
+load(file = "../DataFormatting/FormattedData.Rdata")
 
 #Mesh node data
-load(file = '~/Monarchs/DataFormatting/FormattedNodeData.Rdata')
+load(file = '../DataFormatting/FormattedNodeData.Rdata')
 
 #-------------#
 #-Format data-#
@@ -47,7 +50,6 @@ domain_sp_seg <- inla.sp2segment(as(domain_sp, "Spatial"))
 
 #Summer domain boundary
 domain_su_seg <- inla.sp2segment(as(domain_su, "Spatial"))
-
 
 #Construct triangulated mesh
 mesh <- list()
@@ -189,7 +191,6 @@ Data <- Data %>% mutate(daysaccum = as.numeric(as.Date(paste0(yr, "-", mo_day)) 
 NDVI <- Data$NDVI
 
 #Averaged daily growing degree days @ data
-#GDD <- Data$gdd.avg
 GDD <- Data$gdd2
 
 #Number of other butterfly observations @ data
@@ -208,7 +209,6 @@ nNDVI <- NodeDF$NDVI
 
 #Averaged daily growing degree days @ nodes summed to 14 day window
 nGDD <- NodeDF$gdd.avg * 14
-#nGDD <- NodeDF$gdd2
 
 #Number of other butterfly observations @ nodes
 nBias <- NodeDF$Bias
@@ -217,35 +217,35 @@ nBias <- NodeDF$Bias
 nPopD <- NodeDF$PopD
 
 #Scale covaraites for both data & nodes
-tmp1 <- (NDVI - mean(c(NDVI, nNDVI)))/sd(c(NDVI, nNDVI))
-tmp2 <- (GDD - mean(c(GDD, nGDD)))/sd(c(GDD, nGDD))
-tmp3 <- (Bias - mean(c(Bias, nBias)))/sd(c(Bias, nBias))
-tmp4 <- (PopD - mean(c(PopD, nPopD)))/sd(c(PopD, nPopD))
+ndvi.stan.data <- (NDVI - mean(c(NDVI, nNDVI)))/sd(c(NDVI, nNDVI))
+gdd.stan.data <- (GDD - mean(c(GDD, nGDD)))/sd(c(GDD, nGDD))
+bias.stan.data <- (Bias - mean(c(Bias, nBias)))/sd(c(Bias, nBias))
+pop.stan.data <- (PopD - mean(c(PopD, nPopD)))/sd(c(PopD, nPopD))
 
-tmp5 <- (nNDVI - mean(c(NDVI, nNDVI)))/sd(c(NDVI, nNDVI))
-tmp6 <- (nGDD - mean(c(GDD, nGDD)))/sd(c(GDD, nGDD))
-tmp7 <- (nBias - mean(c(Bias, nBias)))/sd(c(Bias, nBias))
-tmp8 <- (nPopD - mean(c(PopD, nPopD)))/sd(c(PopD, nPopD))
+ndvi.stan.nodes <- (nNDVI - mean(c(NDVI, nNDVI)))/sd(c(NDVI, nNDVI))
+gdd.stan.nodes <- (nGDD - mean(c(GDD, nGDD)))/sd(c(GDD, nGDD))
+bias.stan.nodes <- (nBias - mean(c(Bias, nBias)))/sd(c(Bias, nBias))
+pop.stan.nodes <- (nPopD - mean(c(PopD, nPopD)))/sd(c(PopD, nPopD))
 
-NDVI <- tmp1
-GDD <- tmp2
-Bias <- tmp3
-PopD <- tmp4
+NDVI <- ndvi.stan.data
+GDD <- gdd.stan.data
+Bias <- bias.stan.data
+PopD <- pop.stan.data
 
-nNDVI <- tmp5
-nGDD <- tmp6
-nBias <- tmp7
-nPopD <- tmp8
+nNDVI <- ndvi.stan.nodes
+nGDD <- gdd.stan.nodes
+nBias <- bias.stan.nodes
+nPopD <- pop.stan.nodes
 
 #--------------#
 #-Optimize nll-#
 #--------------#
 
 #Compile TMB code (only once)
-# compile("./DataAnalysis/IntegratedModel_Final.cpp")
+# compile("./DataAnalysis/IntegratedModel.cpp")
 
 #Load TMB code
-dyn.load(dynlib("./DataAnalysis/IntegratedModel_Final"))
+dyn.load(dynlib("./DataAnalysis/IntegratedModel"))
 
 #PHASE 1: Fit fixed effects
 
@@ -436,13 +436,8 @@ omg_su <- out2$par.random[(nodes1+nodes2+1):(nodes1+nodes2+nodes3)]/exp(out2$par
 #-Supplemental Material-#
 #-----------------------#
 
-#Appendix D Table D.1
+#Appendix S3 Table ??
 write.csv(Output, file = "TableE.1.csv")
 
-#Appendix D Table D.2
+#Appendix S3 Table ??
 write.csv(Effect, file = "TableE.2.csv")
-
-#Fixed effects output
-
-
-

@@ -4,7 +4,7 @@
 
 ### *In Review*
 
-### Code/Data DOI
+### Code/Data DOI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8433370.svg)](https://doi.org/10.5281/zenodo.8433370)
 
 ### Please contact the first author for questions about the code or data: Matthew T. Farr (matthewtfarr@gmail.com)
 __________________________________________________________________________________________________________________________________________
@@ -26,4 +26,4 @@ ________________________________________________________________________________
 See the following subdirectories for data and metadata: [DataFromatting](./DataFormatting)  
 
 ## Code
-See the following subdirectories for code and metadata: [DataAnalysis](./DataAnalysis), [DataFormatting](./DataFormatting), [PostAnalysis](./PostAnalysis), [SupportingInformation](./SupportingInformation)
+See the following subdirectories for code and metadata: [DataAnalysis](./DataAnalysis), [DataFormatting](./DataFormatting), [PostAnalysis](./PostAnalysis), [SupportingInformation](./SupportingInformation). For a vignette, see the [Simulation.R](./DataAnalysis/Simulation.R) file.

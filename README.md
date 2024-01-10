@@ -1,4 +1,4 @@
-# Overcoming data gaps using integrated models to estimate migratory species dynamics during cryptic periods of the annual cycle
+# [Overcoming data gaps using integrated models to estimate migratory species dynamics during cryptic periods of the annual cycle](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.14282)
 
 ### [Matthew T. Farr](https://farrmt.github.io/), [Erin R. Zylstra](https://erinzylstra.weebly.com/), [Leslie Ries](https://www.butterflyinformatics.org/), & [Elise F. Zipkin](https://zipkinlab.org/)
 
@@ -21,6 +21,7 @@ ________________________________________________________________________________
 ### [DataFormat](./DataFormat): Contains non-proprietary data, code to format raw data for analysis
 ### [PostAnalysis](./PostAnalysis): Contains code to create tables & figures
 ### [SupportingInformation](./SupportingInformation): Contains supporting information and code to generate supporting information
+### [PublishedPDF](Farr_et_al-2024-MEE.pdf): PDF of published paper
 
 ## Data
 See the following subdirectories for data and metadata: [DataFromatting](./DataFormatting)  
